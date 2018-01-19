@@ -1,0 +1,14 @@
+{
+	"env": {
+		"browser": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2017,
+		"sourceType": "script"
+	},
+	"extends": "eslint:recommended",
+	"globals": {
+		"SyncWeb": true
+	}
+}

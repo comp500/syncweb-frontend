@@ -1,0 +1,31 @@
+{
+  "name": "syncweb-frontend",
+  "version": "1.0.0",
+  "description": "A frontend for syncweb-js.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "gulp --watch",
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/comp500/syncweb-frontend.git"
+  },
+  "author": "comp500",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/comp500/syncweb-frontend/issues"
+  },
+  "homepage": "https://github.com/comp500/syncweb-frontend#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-gh-pages": "^0.5.4",
+    "gulp-sourcemaps": "^2.6.3",
+    "gulp-uglify": "^3.0.0"
+  }
+}
