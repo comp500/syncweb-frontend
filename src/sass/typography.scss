@@ -5,7 +5,11 @@ body {
 
 h1 {
 	margin-bottom: 0.1em;
-	font-size: 3em;
+	font-size: 2em;
+
+	@include tablet {
+		font-size: 3em;
+	}
 }
 
 .subtext {

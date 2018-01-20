@@ -1,2 +1,14 @@
+@mixin desktop {
+	@media (min-width: 1000px) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (min-width: 650px) {
+		@content;
+	}
+}
+
 @import 'typography';
 @import 'layout';
