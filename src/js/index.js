@@ -11,8 +11,16 @@ const syncWeb = new SyncWeb.Client();
 window.syncWeb = syncWeb;
 
 document.getElementById("connection-form").addEventListener("submit", (e) => {
-	// TODO: error notification
-	console.log(document.getElementById("url-input").value); // eslint-disable-line no-console
 	e.preventDefault();
+	document.getElementById("connection-errors").innerHTML = "";
+
+	let url = document.getElementById("url-input").value;
+	if (url != null && url.length > 3 && url.split("://").length == 2) {
+		// TODO: error notification
+		syncWeb.connect("WebSocket-builtin", { url });
+	} else {
+		document.getElementById("connection-errors").innerHTML = "Invalid URL.";
+	}
+
 	return false;
 }, true);
