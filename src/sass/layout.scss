@@ -6,8 +6,29 @@
 }
 
 .config {
-	float: right;
-	border: solid 1px #333;
-	border-radius: 5px;
-	padding: 1em;
+	@include tablet {
+		width: 10%;
+		border: solid 1px #333;
+		border-radius: 5px;
+		padding: 1em;
+	}
+}
+
+.player {
+	background-color: #111;
+	&.disconnected {
+		color: #EEE;
+		text-align: center;
+	}
+
+	&::before {
+		display: block;
+		content: "";
+		// 16 by 9 aspect ratio
+		padding-top: percentage(9 / 16);
+	}
+
+	@include tablet {
+		width: 80%;
+	}
 }
