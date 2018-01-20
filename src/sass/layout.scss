@@ -3,14 +3,23 @@
 		width: 90%;
 		margin: 0 auto;
 	}
+
+	@include desktop-xl {
+		width: 80%;
+	}
 }
 
 .config {
 	@include tablet {
-		width: 10%;
+		float: right;
+		width: $config-width - 2em;
 		border: solid 1px #333;
 		border-radius: 5px;
 		padding: 1em;
+	}
+
+	@include desktop {
+		width: $config-width-desktop - 2em;
 	}
 }
 
@@ -29,6 +38,10 @@
 	}
 
 	@include tablet {
-		width: 80%;
+		margin-right: $config-width + $config-distance;
+	}
+
+	@include desktop {
+		margin-right: $config-width-desktop + $config-distance;
 	}
 }
