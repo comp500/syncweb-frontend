@@ -36,7 +36,7 @@ gulp.task("static", function () {
 });
 
 gulp.task("sass", function () {
-	return gulp.src("src/sass/**/*.scss")
+	return gulp.src("src/sass/styles.scss")
 		.pipe(sourcemaps.init())
 		.pipe(sass().on("error", sass.logError))
 		.pipe(sourcemaps.write("."))
