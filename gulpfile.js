@@ -7,7 +7,9 @@ const iife = require("gulp-iife");
 const uglify = require("gulp-uglify");
 const sass = require("gulp-sass");
 
-gulp.task("default", ["minified", "static"], function () {
+gulp.task("default", ["js", "jsminified", "static", "sass"]);
+
+gulp.task("js", function () {
 	return gulp.src("src/js/**/*")
 		.pipe(sourcemaps.init())
 		.pipe(concat("syncweb-frontend.js"))
@@ -17,7 +19,7 @@ gulp.task("default", ["minified", "static"], function () {
 		.pipe(gulp.dest("dist/js"));
 });
 
-gulp.task("minified", function () {
+gulp.task("jsminified", function () {
 	return gulp.src("src/js/**/*")
 		.pipe(sourcemaps.init())
 		.pipe(concat("syncweb-frontend.min.js"))
@@ -34,9 +36,9 @@ gulp.task("static", function () {
 });
 
 gulp.task("sass", function () {
-	return gulp.src("src/static/**/*.scss")
+	return gulp.src("src/sass/**/*.scss")
 		.pipe(sourcemaps.init())
 		.pipe(sass().on("error", sass.logError))
 		.pipe(sourcemaps.write("."))
-		.pipe(gulp.dest("dist"));
+		.pipe(gulp.dest("dist/css"));
 });
