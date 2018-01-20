@@ -10,7 +10,7 @@ const sass = require("gulp-sass");
 gulp.task("default", ["js", "jsminified", "static", "sass"]);
 
 gulp.task("js", function () {
-	return gulp.src("src/js/**/*")
+	return gulp.src(["src/js/players/**/*", "src/js/UIProxy.js", "src/js/index.js"])
 		.pipe(sourcemaps.init())
 		.pipe(concat("syncweb-frontend.js"))
 		.pipe(babel())
@@ -20,7 +20,7 @@ gulp.task("js", function () {
 });
 
 gulp.task("jsminified", function () {
-	return gulp.src("src/js/**/*")
+	return gulp.src(["src/js/players/**/*", "src/js/UIProxy.js", "src/js/index.js"])
 		.pipe(sourcemaps.init())
 		.pipe(concat("syncweb-frontend.min.js"))
 		.pipe(babel())
