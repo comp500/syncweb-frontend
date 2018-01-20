@@ -42,3 +42,9 @@ gulp.task("sass", function () {
 		.pipe(sourcemaps.write("."))
 		.pipe(gulp.dest("dist/css"));
 });
+
+gulp.task("watch", function () {
+	gulp.watch("src/sass/**/*", ["sass"]);
+	gulp.watch("src/static/**/*", ["static"]);
+	gulp.watch("src/js/**/*", ["js"]);
+});
