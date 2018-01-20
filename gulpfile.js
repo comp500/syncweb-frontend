@@ -1,44 +1,42 @@
 /* eslint-env node */
 const gulp = require("gulp");
-/*const sourcemaps = require("gulp-sourcemaps");
+const sourcemaps = require("gulp-sourcemaps");
 const babel = require("gulp-babel");
 const concat = require("gulp-concat");
 const iife = require("gulp-iife");
 const uglify = require("gulp-uglify");
-
-const fileList = [
-	"src/index.js",
-	"src/util/ArrayHandlers.js",
-	"src/util/EventEmitter.js",
-	"src/core/Protocol.js",
-	"src/core/Player.js",
-	"src/core/Client.js",
-	"src/websocket/WebSocketProtocol.js",
-	"src/export.js"
-];*/
+const sass = require("gulp-sass");
 
 gulp.task("default", ["minified", "static"], function () {
-	/*return gulp.src(fileList)
+	return gulp.src("src/js/**/*")
 		.pipe(sourcemaps.init())
-		.pipe(concat("syncweb.js"))
+		.pipe(concat("syncweb-frontend.js"))
 		.pipe(babel())
 		.pipe(iife({ useStrict: false, prependSemicolon: false }))
 		.pipe(sourcemaps.write("."))
-		.pipe(gulp.dest("dist"));*/
+		.pipe(gulp.dest("dist/js"));
 });
 
 gulp.task("minified", function () {
-	/*return gulp.src(fileList)
+	return gulp.src("src/js/**/*")
 		.pipe(sourcemaps.init())
-		.pipe(concat("syncweb.min.js"))
+		.pipe(concat("syncweb-frontend.min.js"))
 		.pipe(babel())
 		.pipe(iife({ useStrict: false, prependSemicolon: false }))
 		.pipe(uglify())
 		.pipe(sourcemaps.write("."))
-		.pipe(gulp.dest("dist"));*/
+		.pipe(gulp.dest("dist/js"));
 });
 
 gulp.task("static", function () {
 	return gulp.src("src/static/**/*")
+		.pipe(gulp.dest("dist"));
+});
+
+gulp.task("sass", function () {
+	return gulp.src("src/static/**/*.scss")
+		.pipe(sourcemaps.init())
+		.pipe(sass().on("error", sass.logError))
+		.pipe(sourcemaps.write("."))
 		.pipe(gulp.dest("dist"));
 });
