@@ -17,12 +17,15 @@
 			<h1>SyncWeb frontend <em class="subtext">A frontend for <a href="https://github.com/comp500/syncweb-js">syncweb-js</a>.</em></h1>
 		</header>
 
+		<noscript>You must enable JavaScript to use SyncWeb.</noscript>
+		<div id="compat-errors"></div>
+
 		<section class="config">
 			<strong>Connection Settings:</strong>
-			<form>
+			<form id="connection-form">
 				<label for="url-input">URL:</label>
-				<input type="text" name="url-input"><br>
-				<button>Connect</button>
+				<input type="text" name="url-input" id="url-input"><br>
+				<button id="connect-button">Connect</button>
 			</form>
 		</section>
 		<section class="player disconnected">Disconnected</section>
