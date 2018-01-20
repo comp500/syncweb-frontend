@@ -1,11 +1,11 @@
 .container {
 	@include desktop {
-		width: 90%;
+		width: 80%;
 		margin: 0 auto;
 	}
 
 	@include desktop-xl {
-		width: 80%;
+		width: 70%;
 	}
 }
 
