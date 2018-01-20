@@ -10,8 +10,9 @@ const syncWeb = new SyncWeb.Client();
 // remove when in production?
 window.syncWeb = syncWeb;
 
-document.getElementById("connection-form").addEventListener(() => {
+document.getElementById("connection-form").addEventListener("submit", (e) => {
 	// TODO: error notification
 	console.log(document.getElementById("url-input").value); // eslint-disable-line no-console
+	e.preventDefault();
 	return false;
 }, true);
