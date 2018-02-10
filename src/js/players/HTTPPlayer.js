@@ -17,6 +17,12 @@ class HTMLPlayer extends SyncWeb.Player {
 		if (event == "seek" && this.videoElement) {
 			this.videoElement.currentTime = data;
 		}
+		if (event == "pause" && this.videoElement) {
+			this.videoElement.pause();
+		}
+		if (event == "unpause" && this.videoElement) {
+			this.videoElement.play();
+		}
 	}
 
 	command(command, data) {
@@ -38,6 +44,7 @@ class HTMLPlayer extends SyncWeb.Player {
 				this.videoElement.addEventListener("seeked", () => {
 					this.client.proxyCommandToProtocol("seek", this.videoElement.currentTime);
 				}, false);
+				this.videoElement.controls = true;
 				this.client.playerElement.appendChild(this.videoElement);
 			}
 			this.videoElement.src = data;
