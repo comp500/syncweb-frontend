@@ -8,7 +8,7 @@ if (!window.WebSocket) {
 	id("compat-errors").innerHTML = "Your browser does not support features (WebSocket) required for SyncWeb. Please update to a newer browser.";
 }
 
-const syncWeb = new SyncWeb.Client();
+const syncWeb = new SyncWeb.Client(id("syncweb-player"));
 // remove when in production?
 window.syncWeb = syncWeb;
 
