@@ -25,9 +25,20 @@ class HTMLPlayer extends SyncWeb.Player {
 			if (!this.videoElement) {
 				this.videoElement = document.createElement("video");
 				this.client.playerElement.innerHTML = "";
+				this.client.playerElement.classList.remove("disconnected");
 				this.videoElement.addEventListener("timeupdate", () => {
 					this.client.proxyCommandToProtocol("settime", this.videoElement.currentTime);
 				}, false);
+				this.videoElement.addEventListener("play", () => {
+					this.client.proxyCommandToProtocol("unpause");
+				}, false);
+				this.videoElement.addEventListener("pause", () => {
+					this.client.proxyCommandToProtocol("pause");
+				}, false);
+				this.videoElement.addEventListener("seeked", () => {
+					this.client.proxyCommandToProtocol("seek", this.videoElement.currentTime);
+				}, false);
+				this.client.playerElement.appendChild(this.videoElement);
 			}
 			this.videoElement.src = data;
 			this.client.proxyCommandToProtocol("setmeta", {
