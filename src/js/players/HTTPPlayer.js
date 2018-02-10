@@ -14,6 +14,9 @@ class HTMLPlayer extends SyncWeb.Player {
 
 	on(event, data) {
 		console.log(event, data); // eslint-disable-line no-console
+		if (event == "seek" && this.videoElement) {
+			this.videoElement.currentTime = data;
+		}
 	}
 
 	command(command, data) {
