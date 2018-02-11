@@ -25,6 +25,12 @@ class UIProxy extends SyncWeb.PlayerProxy {
 			case "chat":
 				this.appendChat(data.message, data.name);
 				break;
+			case "joined":
+				this.appendChat(`${data} joined`);
+				break;
+			case "left":
+				this.appendChat(`${data} left`);
+				break;
 		}
 	}
 
