@@ -19,7 +19,17 @@ id("connection-form").addEventListener("submit", (e) => {
 	let url = id("url-input").value;
 	if (url != null && url.length > 3 && url.split("://").length == 2) {
 		// TODO: error notification
-		syncWeb.connect("WebSocket-builtin", { url });
+		let name = id("name-input").value;
+		let room = id("room-input").value;
+		if (name != null && name.length > 0) {
+			if (room != null && room.length > 0) {
+				syncWeb.connect("WebSocket-builtin", { url, name, room });
+			} else {
+				id("connection-errors").innerHTML = "Please type a room.";
+			}
+		} else {
+			id("connection-errors").innerHTML = "Please type a username.";
+		}
 	} else {
 		id("connection-errors").innerHTML = "Invalid URL.";
 	}

@@ -51,3 +51,8 @@
 .hidden {
 	display: none;
 }
+
+.chat {
+	max-height: 100px;
+	overflow-y: auto;
+}

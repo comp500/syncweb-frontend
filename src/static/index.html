@@ -23,13 +23,22 @@
 		<section class="config" id="syncweb-connconfig">
 			<strong>Connection Settings:</strong>
 			<form id="connection-form">
-				<label for="url-input">URL:</label>
-				<input type="text" name="url-input" id="url-input"><br>
+				<label for="url-input">URL:</label> <input type="text" name="url-input" id="url-input"><br>
+				<div class="custom-controls">
+					<!-- TODO: don't hardcode this, make it based on protocol -->
+					<label for="name-input">Username:</label> <input type="text" name="name-input" id="name-input"><br>
+					<label for="room-input">Room:</label> <input type="text" name="room-input" id="room-input"><br>
+				</div>
 				<button id="connect-button">Connect</button>
 				<div id="connection-errors"></div>
 			</form>
 		</section>
+
 		<section class="player disconnected" id="syncweb-player">Disconnected</section>
+
+		<section class="chat" id="syncweb-chat"></section>
+
+		<section class="videoselect" id="syncweb-videoselect"></section>
 
 		<footer>
 			<em><a href="https://github.com/comp500/syncweb-frontend">Source code</a></em>
