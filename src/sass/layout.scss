@@ -24,17 +24,21 @@
 }
 
 .player {
-	background-color: #111;
 	&.disconnected {
+		background-color: #111;
 		color: #EEE;
 		text-align: center;
 	}
 
 	&::before {
-		display: block;
-		content: "";
+		//display: block;
+		//content: "";
 		// 16 by 9 aspect ratio
-		padding-top: percentage(9 / 16);
+		//padding-top: percentage(9 / 16);
+	}
+
+	&:first-child {
+		width: 100%;
 	}
 
 	@include tablet {

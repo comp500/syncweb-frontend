@@ -45,13 +45,18 @@ class HTMLPlayer extends SyncWeb.Player {
 					this.client.proxyCommandToProtocol("seek", this.videoElement.currentTime);
 				}, false);
 				this.videoElement.controls = true;
+				this.videoElement.loop = false;
 				this.client.playerElement.appendChild(this.videoElement);
 			}
 			this.videoElement.src = data;
-			this.client.proxyCommandToProtocol("setmeta", {
-				duration: 60.139682,
-				name: data
-			});
+			let handler = () => {
+				this.client.proxyCommandToProtocol("setmeta", {
+					duration: this.videoElement.duration,
+					name: data
+				});
+				this.videoElement.removeEventListener("loadedmetadata", handler, false);
+			};
+			this.videoElement.addEventListener("loadedmetadata", handler, false);
 		}
 	}
 }
