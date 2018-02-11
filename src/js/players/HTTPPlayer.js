@@ -8,7 +8,7 @@ class HTMLPlayer extends SyncWeb.Player {
 		return split[0] == "http";
 	}
 
-	on(event, data) {
+	event(event, data) {
 		console.log(event, data); // eslint-disable-line no-console
 		if (event == "seek" && this.videoElement) {
 			this.videoElement.currentTime = data;
@@ -19,26 +19,22 @@ class HTMLPlayer extends SyncWeb.Player {
 		if (event == "unpause" && this.videoElement) {
 			this.videoElement.play();
 		}
-	}
-
-	command(command, data) {
-		console.log(command, data); // eslint-disable-line no-console
-		if (command == "seturl") {
+		if (event == "seturl") {
 			if (!this.videoElement) {
 				this.videoElement = document.createElement("video");
 				this.client.playerElement.innerHTML = "";
 				this.client.playerElement.classList.remove("disconnected");
 				this.videoElement.addEventListener("timeupdate", () => {
-					this.client.proxyCommandToProtocol("settime", this.videoElement.currentTime);
+					this.emit("settime", this.videoElement.currentTime);
 				}, false);
 				this.videoElement.addEventListener("play", () => {
-					this.client.proxyCommandToProtocol("unpause");
+					this.emit("unpause");
 				}, false);
 				this.videoElement.addEventListener("pause", () => {
-					this.client.proxyCommandToProtocol("pause");
+					this.emit("pause");
 				}, false);
 				this.videoElement.addEventListener("seeked", () => {
-					this.client.proxyCommandToProtocol("seek", this.videoElement.currentTime);
+					this.emit("seek", this.videoElement.currentTime);
 				}, false);
 				this.videoElement.controls = true;
 				this.videoElement.loop = false;
@@ -46,7 +42,7 @@ class HTMLPlayer extends SyncWeb.Player {
 			}
 			this.videoElement.src = data;
 			let handler = () => {
-				this.client.proxyCommandToProtocol("setmeta", {
+				this.emit("setmeta", {
 					duration: this.videoElement.duration,
 					name: data
 				});

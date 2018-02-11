@@ -3,12 +3,8 @@ class UIProxy extends SyncWeb.PlayerProxy {
 		super("UIProxy-frontend");
 	}
 
-	on(event, data) {
+	event(event, data) {
 		console.log(event, data); // eslint-disable-line no-console
-	}
-
-	command(command, data) {
-		console.log(command, data); // eslint-disable-line no-console
 	}
 }
 
