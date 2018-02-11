@@ -22,6 +22,9 @@ class UIProxy extends SyncWeb.PlayerProxy {
 			case "roomdetails":
 				this.appendChat(JSON.stringify(data));
 				break;
+			case "chat":
+				this.appendChat(data.message, data.name);
+				break;
 		}
 	}
 
@@ -30,10 +33,12 @@ class UIProxy extends SyncWeb.PlayerProxy {
 		if (name) {
 			let domName = document.createElement("strong");
 			domName.appendChild(document.createTextNode(`${name}: `));
-			domMsg.appendChild(domMsg);
+			domMsg.appendChild(domName);
 		}
 		domMsg.appendChild(document.createTextNode(message));
-		this.id("syncweb-chat").appendChild(domMsg);
+		let chat = this.id("syncweb-chat");
+		chat.appendChild(domMsg);
+		chat.scrollTop = chat.scrollHeight;
 	}
 }
 
