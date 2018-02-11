@@ -3,10 +3,6 @@ class HTMLPlayer extends SyncWeb.Player {
 		super("HTMLPlayer-builtin");
 	}
 
-	initialise(client) {
-		this.client = client;
-	}
-
 	supports(url) {
 		let split = url.split("://");
 		return split[0] == "http";
