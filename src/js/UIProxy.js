@@ -20,7 +20,7 @@ class UIProxy extends SyncWeb.PlayerProxy {
 				}
 				break;
 			case "roomdetails":
-				this.appendChat(JSON.stringify(data));
+				this.appendChat(JSON.stringify(data), "room details");
 				break;
 			case "chat":
 				this.appendChat(data.message, data.name);
@@ -30,6 +30,9 @@ class UIProxy extends SyncWeb.PlayerProxy {
 				break;
 			case "left":
 				this.appendChat(`${data} left`);
+				break;
+			case "moved":
+				this.appendChat(`${data.user} moved to room: "${data.room}"`);
 				break;
 		}
 	}
