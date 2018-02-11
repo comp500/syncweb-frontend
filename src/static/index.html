@@ -38,7 +38,13 @@
 
 		<section class="chat" id="syncweb-chat"></section>
 
-		<section class="videoselect" id="syncweb-videoselect"></section>
+		<section class="videoselect" id="syncweb-videoselect">
+			<form id="httpvideo-form">
+				<!-- TODO: don't hardcode this, make it based on player -->
+				<label for="httpvideo-input">URL:</label> <input type="text" name="httpvideo-input" id="httpvideo-input"><br>
+				<button id="httpvideo-button">Load</button>
+			</form>
+		</section>
 
 		<footer>
 			<em><a href="https://github.com/comp500/syncweb-frontend">Source code</a></em>

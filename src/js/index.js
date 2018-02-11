@@ -36,3 +36,13 @@ id("connection-form").addEventListener("submit", (e) => {
 
 	return false;
 }, true);
+
+id("httpvideo-form").addEventListener("submit", (e) => {
+	e.preventDefault();
+	id("connection-errors").innerHTML = "";
+
+	let url = id("httpvideo-input").value;
+	syncWeb.setURL(url);
+
+	return false;
+}, true);
