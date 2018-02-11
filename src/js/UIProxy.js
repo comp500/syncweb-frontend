@@ -4,7 +4,12 @@ class UIProxy extends SyncWeb.PlayerProxy {
 	}
 
 	event(event, data) {
-		console.log(event, data); // eslint-disable-line no-console
+		console.log("uiproxy", event, data); // eslint-disable-line no-console
+		switch (event) {
+			case "roomdetails":
+				
+				break;
+		}
 	}
 }
 
