@@ -46,3 +46,51 @@ id("httpvideo-form").addEventListener("submit", (e) => {
 
 	return false;
 }, true);
+
+let appendChat = (message, name) => {
+	let domMsg = document.createElement("div");
+	if (name) {
+		let domName = document.createElement("strong");
+		domName.appendChild(document.createTextNode(`${name}: `));
+		domMsg.appendChild(domName);
+	}
+	domMsg.appendChild(document.createTextNode(message));
+	let chat = id("syncweb-chat");
+	chat.appendChild(domMsg);
+	chat.scrollTop = chat.scrollHeight;
+}
+
+// TODO make these detachable from protocol, for changeable protocols
+syncWeb.on("connecting", () => {
+	id("syncweb-connconfig").classList.add("hidden");
+	id("syncweb-player").innerText = "Connecting";
+});
+
+syncWeb.on("connected", (data) => {
+	if (data) {
+		id("syncweb-player").innerText = data;
+		appendChat(data);
+	} else {
+		id("syncweb-player").innerText = "Connected to socket, loading...";
+	}
+});
+
+syncWeb.on("roomdetails", (data) => {
+	appendChat(JSON.stringify(data), "room details");
+});
+
+syncWeb.on("chat", (data) => {
+	appendChat(data.message, data.name);
+});
+
+syncWeb.on("joined", (data) => {
+	appendChat(`${data} joined`);
+});
+
+syncWeb.on("left", (data) => {
+	appendChat(`${data} left`);
+});
+
+syncWeb.on("moved", (data) => {
+	appendChat(`${data.user} moved to room: "${data.room}"`);
+});
