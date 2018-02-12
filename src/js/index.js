@@ -121,14 +121,29 @@ currentPlayer.on("settime", (position) => {
 });
 
 currentPlayer.on("seek", (position) => {
+	if (syncWeb.currentUsername) {
+		appendChat(`${syncWeb.currentUsername} seeked to ${position}`);
+	} else {
+		appendChat(`Seeked to ${position}`);
+	}
 	syncWeb.seekTo(position);
 });
 
 currentPlayer.on("unpause", () => {
+	if (syncWeb.currentUsername) {
+		appendChat(`${syncWeb.currentUsername} unpaused`);
+	} else {
+		appendChat(`Unpaused`);
+	}
 	syncWeb.setPause(false);
 });
 
 currentPlayer.on("pause", () => {
+	if (syncWeb.currentUsername) {
+		appendChat(`${syncWeb.currentUsername} paused`);
+	} else {
+		appendChat(`Paused`);
+	}
 	syncWeb.setPause(true);
 });
 
