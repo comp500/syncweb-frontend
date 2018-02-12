@@ -26,7 +26,10 @@ id("connection-form").addEventListener("submit", (e) => {
 		let room = id("room-input").value;
 		if (name != null && name.length > 0) {
 			if (room != null && room.length > 0) {
-				syncWeb.connect("WebSocket-builtin", { url, name, room });
+				syncWeb.connect({ url, name, room }, () => {
+					id("syncweb-connconfig").classList.add("hidden");
+					id("syncweb-player").innerText = "Connected to socket, loading...";
+				});
 			} else {
 				id("connection-errors").innerHTML = "Please type a room.";
 			}
@@ -65,17 +68,12 @@ let appendChat = (message, name) => {
 }
 
 // TODO make these detachable from protocol, for changeable protocols
-syncWeb.on("connecting", () => {
-	id("syncweb-connconfig").classList.add("hidden");
-	id("syncweb-player").innerText = "Connecting";
-});
-
 syncWeb.on("connected", (data) => {
 	if (data) {
 		id("syncweb-player").innerText = data;
 		appendChat(data);
 	} else {
-		id("syncweb-player").innerText = "Connected to socket, loading...";
+		id("syncweb-player").innerText = "Connected";
 	}
 });
 

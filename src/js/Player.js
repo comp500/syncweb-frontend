@@ -1,4 +1,4 @@
-class Player extends SyncWeb.EventEmitter {
+class Player extends SyncWeb.util.EventEmitter {
 	constructor(name) {
 		super();
 		this.name = name;
