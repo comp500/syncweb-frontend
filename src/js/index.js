@@ -8,9 +8,12 @@ if (!window.WebSocket) {
 	id("compat-errors").innerHTML = "Your browser does not support features (WebSocket) required for SyncWeb. Please update to a newer browser.";
 }
 
-const syncWeb = new SyncWeb.Client(id("syncweb-player"));
+const syncWeb = new SyncWeb.Client();
 // remove when in production?
 window.syncWeb = syncWeb;
+
+// TODO make this detachable from player, and not created on startup, for changeable protocols
+const currentPlayer = new SyncWeb.HTTPPlayer(id("syncweb-player"));
 
 id("connection-form").addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -42,6 +45,7 @@ id("httpvideo-form").addEventListener("submit", (e) => {
 	id("connection-errors").innerHTML = "";
 
 	let url = id("httpvideo-input").value;
+	currentPlayer.setURL(url);
 	syncWeb.setURL(url);
 
 	return false;
@@ -79,18 +83,55 @@ syncWeb.on("roomdetails", (data) => {
 	appendChat(JSON.stringify(data), "room details");
 });
 
-syncWeb.on("chat", (data) => {
-	appendChat(data.message, data.name);
+syncWeb.on("chat", (name, message) => {
+	appendChat(message, name);
 });
 
-syncWeb.on("joined", (data) => {
-	appendChat(`${data} joined`);
+syncWeb.on("joined", (user, room) => {
+	appendChat(`${user} joined room: "${room}"`);
 });
 
-syncWeb.on("left", (data) => {
-	appendChat(`${data} left`);
+syncWeb.on("left", (user, room) => {
+	appendChat(`${user} left room: "${room}"`);
 });
 
-syncWeb.on("moved", (data) => {
-	appendChat(`${data.user} moved to room: "${data.room}"`);
+syncWeb.on("moved", (user, room) => {
+	appendChat(`${user} moved to room: "${room}"`);
+});
+
+syncWeb.on("seek", (position, user) => {
+	appendChat(`${user} seeked to ${position}`);
+	currentPlayer.seekTo(position);
+});
+
+syncWeb.on("pause", (user) => {
+	appendChat(`${user} paused`);
+	currentPlayer.pause();
+});
+
+syncWeb.on("unpause", (user) => {
+	// potential problem: unpause is sent from video.play()
+	// could result in unintentional ready setting
+	appendChat(`${user} unpaused`);
+	currentPlayer.play();
+});
+
+currentPlayer.on("settime", (position) => {
+	syncWeb.setTime(position);
+});
+
+currentPlayer.on("seek", (position) => {
+	syncWeb.seekTo(position);
+});
+
+currentPlayer.on("unpause", () => {
+	syncWeb.setPause(false);
+});
+
+currentPlayer.on("pause", () => {
+	syncWeb.setPause(true);
+});
+
+currentPlayer.on("setmeta", (name, duration) => {
+	syncWeb.sendFile(duration, name);
 });
