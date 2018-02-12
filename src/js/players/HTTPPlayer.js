@@ -11,7 +11,10 @@ class HTTPPlayer extends SyncWeb.Player {
 
 	seekTo(position) {
 		if (this.videoElement) {
+			this.justSeeked = true;
 			this.videoElement.currentTime = position;
+		} else {
+			this.updatePosition = position;
 		}
 	}
 
@@ -53,10 +56,20 @@ class HTTPPlayer extends SyncWeb.Player {
 			this.emit("pause");
 		}, false);
 		this.videoElement.addEventListener("seeked", () => {
-			this.emit("seek", this.videoElement.currentTime);
+			if (this.justSeeked) {
+				// ignore first seek
+				this.justSeeked = false;
+			} else {
+				this.emit("seek", this.videoElement.currentTime);
+			}
 		}, false);
 		this.videoElement.controls = true;
 		this.videoElement.loop = false;
+		if (this.updatePosition) {
+			this.videoElement.currentTime = this.updatePosition;
+			this.updatePosition = false;
+			this.justSeeked = true;
+		}
 		this.playerElement.appendChild(this.videoElement);
 	}
 }
