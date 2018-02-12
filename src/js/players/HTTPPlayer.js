@@ -20,12 +20,14 @@ class HTTPPlayer extends SyncWeb.Player {
 
 	pause() {
 		if (this.videoElement) {
+			this.justPaused = true;
 			this.videoElement.pause();
 		}
 	}
 
 	play() {
 		if (this.videoElement) {
+			this.justPlayed = true;
 			this.videoElement.play();
 		}
 	}
@@ -50,10 +52,18 @@ class HTTPPlayer extends SyncWeb.Player {
 			this.emit("settime", this.videoElement.currentTime);
 		}, false);
 		this.videoElement.addEventListener("play", () => {
-			this.emit("unpause");
+			if (this.justPlayed) {
+				this.justPlayed = false;
+			} else {
+				this.emit("unpause");
+			}
 		}, false);
 		this.videoElement.addEventListener("pause", () => {
-			this.emit("pause");
+			if (this.justPaused) {
+				this.justPaused = false;
+			} else {
+				this.emit("pause");
+			}
 		}, false);
 		this.videoElement.addEventListener("seeked", () => {
 			if (this.justSeeked) {
