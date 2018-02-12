@@ -67,6 +67,7 @@ class HTTPPlayer extends SyncWeb.Player {
 		this.videoElement.loop = false;
 		if (this.updatePosition) {
 			this.videoElement.currentTime = this.updatePosition;
+			this.emit("settime", this.updatePosition);
 			this.updatePosition = false;
 			this.justSeeked = true;
 		}
