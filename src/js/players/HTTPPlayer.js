@@ -41,8 +41,8 @@ class HTTPPlayer extends SyncWeb.Player {
 
 	setupPlayer() {
 		this.videoElement = document.createElement("video");
-		this.client.playerElement.innerHTML = "";
-		this.client.playerElement.classList.remove("disconnected");
+		this.playerElement.innerHTML = "";
+		this.playerElement.classList.remove("disconnected");
 		this.videoElement.addEventListener("timeupdate", () => {
 			this.emit("settime", this.videoElement.currentTime);
 		}, false);

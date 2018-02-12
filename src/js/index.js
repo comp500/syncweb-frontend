@@ -49,7 +49,6 @@ id("httpvideo-form").addEventListener("submit", (e) => {
 
 	let url = id("httpvideo-input").value;
 	currentPlayer.setURL(url);
-	syncWeb.setURL(url);
 
 	return false;
 }, true);
