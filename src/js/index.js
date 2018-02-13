@@ -26,7 +26,7 @@ id("connection-form").addEventListener("submit", (e) => {
 		let room = id("room-input").value;
 		if (name != null && name.length > 0) {
 			if (room != null && room.length > 0) {
-				syncWeb.connect({ url, name, room }, () => {
+				syncWeb.connect({url, name, room}, () => {
 					id("syncweb-connconfig").classList.add("hidden");
 					id("syncweb-player").innerText = "Connected to socket, loading...";
 				});
@@ -64,7 +64,7 @@ let appendChat = (message, name) => {
 	let chat = id("syncweb-chat");
 	chat.appendChild(domMsg);
 	chat.scrollTop = chat.scrollHeight;
-}
+};
 
 // TODO make these detachable from protocol, for changeable protocols
 syncWeb.on("connected", (data) => {
