@@ -4,16 +4,16 @@ if (!window.addEventListener) {
 	id("compat-errors").innerHTML = "Your browser does not support features (addEventListener) required for SyncWeb. Please update to a newer browser.";
 }
 
-if (!window.WebSocket) {
+if (!WebSocket) {
 	id("compat-errors").innerHTML = "Your browser does not support features (WebSocket) required for SyncWeb. Please update to a newer browser.";
 }
 
-const syncWeb = new SyncWeb.Client();
-// remove when in production?
-window.syncWeb = syncWeb;
+import { SyncplayJSONClient } from "syncweb-js";
+import HTTPPlayer from "./players/HTTPPlayer";
+const syncWeb = new SyncplayJSONClient();
 
 // TODO make this detachable from player, and not created on startup, for changeable protocols
-const currentPlayer = new SyncWeb.HTTPPlayer(id("syncweb-player"));
+const currentPlayer = new HTTPPlayer(id("syncweb-player"));
 
 id("connection-form").addEventListener("submit", (e) => {
 	e.preventDefault();
@@ -53,7 +53,7 @@ id("httpvideo-form").addEventListener("submit", (e) => {
 	return false;
 }, true);
 
-let appendChat = (message, name) => {
+let appendChat = (message, name?) => {
 	let domMsg = document.createElement("div");
 	if (name) {
 		let domName = document.createElement("strong");
@@ -67,7 +67,7 @@ let appendChat = (message, name) => {
 };
 
 // TODO make these detachable from protocol, for changeable protocols
-syncWeb.on("connected", (data) => {
+syncWeb.connected.subscribe((data) => {
 	if (data) {
 		id("syncweb-player").innerText = data;
 		appendChat(data);
@@ -76,74 +76,74 @@ syncWeb.on("connected", (data) => {
 	}
 });
 
-syncWeb.on("roomdetails", (data) => {
+syncWeb.roomDetailsUpdated.subscribe((data) => {
 	appendChat(JSON.stringify(data), "room details");
 });
 
-syncWeb.on("chat", (name, message) => {
+syncWeb.chat.subscribe((name, message) => {
 	appendChat(message, name);
 });
 
-syncWeb.on("joined", (user, room) => {
+syncWeb.joined.subscribe((user, room) => {
 	appendChat(`${user} joined room: "${room}"`);
 });
 
-syncWeb.on("left", (user, room) => {
+syncWeb.left.subscribe((user, room) => {
 	appendChat(`${user} left room: "${room}"`);
 });
 
-syncWeb.on("moved", (user, room) => {
+syncWeb.moved.subscribe((user, room) => {
 	appendChat(`${user} moved to room: "${room}"`);
 });
 
-syncWeb.on("seek", (position, user) => {
+syncWeb.seek.subscribe((position, user) => {
 	appendChat(`${user} seeked to ${position}`);
 	currentPlayer.seekTo(position);
 });
 
-syncWeb.on("pause", (user) => {
+syncWeb.pause.subscribe((user) => {
 	appendChat(`${user} paused`);
 	currentPlayer.pause();
 });
 
-syncWeb.on("unpause", (user) => {
+syncWeb.unpause.subscribe((user) => {
 	// potential problem: unpause is sent from video.play()
 	// could result in unintentional ready setting
 	appendChat(`${user} unpaused`);
 	currentPlayer.play();
 });
 
-currentPlayer.on("settime", (position) => {
+currentPlayer.setTime.subscribe((position) => {
 	syncWeb.setTime(position);
 });
 
-currentPlayer.on("seek", (position) => {
-	if (syncWeb.currentUsername) {
-		appendChat(`${syncWeb.currentUsername} seeked to ${position}`);
+currentPlayer.seeked.subscribe((position) => {
+	if (syncWeb.getCurrentUsername()) {
+		appendChat(`${syncWeb.getCurrentUsername()} seeked to ${position}`);
 	} else {
 		appendChat(`Seeked to ${position}`);
 	}
 	syncWeb.seekTo(position);
 });
 
-currentPlayer.on("unpause", () => {
-	if (syncWeb.currentUsername) {
-		appendChat(`${syncWeb.currentUsername} unpaused`);
+currentPlayer.unpaused.subscribe(() => {
+	if (syncWeb.getCurrentUsername()) {
+		appendChat(`${syncWeb.getCurrentUsername()} unpaused`);
 	} else {
 		appendChat(`Unpaused`);
 	}
 	syncWeb.setPause(false);
 });
 
-currentPlayer.on("pause", () => {
-	if (syncWeb.currentUsername) {
-		appendChat(`${syncWeb.currentUsername} paused`);
+currentPlayer.paused.subscribe(() => {
+	if (syncWeb.getCurrentUsername()) {
+		appendChat(`${syncWeb.getCurrentUsername()} paused`);
 	} else {
 		appendChat(`Paused`);
 	}
 	syncWeb.setPause(true);
 });
 
-currentPlayer.on("setmeta", (name, duration) => {
+currentPlayer.setMeta.subscribe((name, duration) => {
 	syncWeb.sendFile(duration, name);
 });

@@ -2,11 +2,11 @@
   "name": "syncweb-frontend",
   "version": "1.0.0",
   "description": "A frontend for syncweb-js.",
-  "main": "gulpfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "gulp watch",
-    "build": "gulp"
+    "serve": "parcel src/index.html",
+    "watch": "parcel watch src/index.html",
+    "build": "parcel build src/index.html"
   },
   "repository": {
     "type": "git",
@@ -19,15 +19,8 @@
   },
   "homepage": "https://github.com/comp500/syncweb-frontend#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-gh-pages": "^0.5.4",
-    "gulp-iife": "^0.3.0",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.3",
-    "gulp-uglify": "^3.0.0"
+    "parcel-bundler": "^1.12.3",
+    "sass": "^1.22.7",
+    "typescript": "^3.5.3"
   }
 }

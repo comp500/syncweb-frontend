@@ -1,68 +1,82 @@
-class HTTPPlayer extends SyncWeb.Player {
-	constructor(playerElement) {
+import Player from "./Player";
+import { EventTracker } from "syncweb-js";
+
+export default class HTTPPlayer extends Player {
+	private videoElement: HTMLVideoElement = null;
+	private justSeeked = false;
+	private justPaused = false;
+	private justPlayed = false;
+	private initialPosition = 0;
+
+	readonly setMeta = new EventTracker<(url: string, duration: number) => void>();
+	readonly setTime = new EventTracker<(time: number) => void>();
+	readonly unpaused = new EventTracker<() => void>();
+	readonly paused = new EventTracker<() => void>();
+	readonly seeked = new EventTracker<(time: number) => void>();
+
+	constructor(public readonly playerElement: HTMLElement) {
 		super("HTMLPlayer-builtin");
-		this.playerElement = playerElement;
 	}
 
-	supports(url) {
+	supports(url: string): boolean {
 		let split = url.split("://");
 		return split[0] == "http";
 	}
 
-	seekTo(position) {
-		if (this.videoElement) {
+	seekTo(position: number): void {
+		if (this.videoElement != null) {
 			this.justSeeked = true;
 			this.videoElement.currentTime = position;
 		} else {
-			this.updatePosition = position;
+			this.initialPosition = position;
 		}
 	}
 
-	pause() {
+	pause(): void {
 		if (this.videoElement) {
 			this.justPaused = true;
 			this.videoElement.pause();
 		}
 	}
 
-	play() {
+	play(): void {
 		if (this.videoElement) {
 			this.justPlayed = true;
 			this.videoElement.play();
 		}
 	}
 
-	setURL(url) {
+	setURL(url: string): void {
 		if (!this.videoElement) {
 			this.setupPlayer();
 		}
 		this.videoElement.src = url;
 		let handler = () => {
-			this.emit("setmeta", url, this.videoElement.duration);
+			this.setMeta.emit(url, this.videoElement.duration);
 			this.videoElement.removeEventListener("loadedmetadata", handler, false);
 		};
 		this.videoElement.addEventListener("loadedmetadata", handler, false);
 	}
 
-	setupPlayer() {
+	private setupPlayer(): void {
 		this.videoElement = document.createElement("video");
 		this.playerElement.innerHTML = "";
 		this.playerElement.classList.remove("disconnected");
 		this.videoElement.addEventListener("timeupdate", () => {
-			this.emit("settime", this.videoElement.currentTime);
+			this.setTime.emit(this.videoElement.currentTime);
 		}, false);
 		this.videoElement.addEventListener("play", () => {
 			if (this.justPlayed) {
 				this.justPlayed = false;
 			} else {
-				this.emit("unpause");
+				this.unpaused.emit();
 			}
 		}, false);
 		this.videoElement.addEventListener("pause", () => {
 			if (this.justPaused) {
 				this.justPaused = false;
 			} else {
-				this.emit("pause");
+				this.paused.emit();
 			}
 		}, false);
 		this.videoElement.addEventListener("seeked", () => {
@@ -70,19 +84,17 @@ class HTTPPlayer extends SyncWeb.Player {
 				// ignore first seek
 				this.justSeeked = false;
 			} else {
-				this.emit("seek", this.videoElement.currentTime);
+				this.seeked.emit(this.videoElement.currentTime);
 			}
 		}, false);
 		this.videoElement.controls = true;
 		this.videoElement.loop = false;
-		if (this.updatePosition) {
-			this.videoElement.currentTime = this.updatePosition;
-			this.emit("settime", this.updatePosition);
-			this.updatePosition = false;
+		if (this.initialPosition > 0) {
+			this.videoElement.currentTime = this.initialPosition;
+			this.setTime.emit(this.videoElement.currentTime);
+			this.initialPosition = 0;
 			this.justSeeked = true;
 		}
 		this.playerElement.appendChild(this.videoElement);
 	}
 }
-
-SyncWeb.HTTPPlayer = HTTPPlayer;
