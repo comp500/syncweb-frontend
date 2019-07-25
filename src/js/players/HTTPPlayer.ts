@@ -1,5 +1,5 @@
 import Player from "./Player";
-import { EventTracker } from "syncweb-js";
+import { EventTracker } from "syncweb-js/src/index";
 
 export default class HTTPPlayer extends Player {
 	private videoElement: HTMLVideoElement = null;

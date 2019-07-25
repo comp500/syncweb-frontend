@@ -8,7 +8,7 @@ if (!WebSocket) {
 	id("compat-errors").innerHTML = "Your browser does not support features (WebSocket) required for SyncWeb. Please update to a newer browser.";
 }
 
-import { SyncplayJSONClient } from "syncweb-js";
+import { SyncplayJSONClient } from "syncweb-js/src/index";
 import HTTPPlayer from "./players/HTTPPlayer";
 const syncWeb = new SyncplayJSONClient();
 
