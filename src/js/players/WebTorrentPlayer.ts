@@ -50,21 +50,33 @@ export default class WebTorrentPlayer implements Player {
 	}
 
 	setURL(url: string): void {
-		if (!this.videoElement) {
-			this.setupPlayer();
-		}
-		this.videoElement.src = url;
-		let handler = () => {
-			this.setMeta.emit(url, this.videoElement.duration);
-			this.videoElement.removeEventListener("loadedmetadata", handler, false);
-		};
-		this.videoElement.addEventListener("loadedmetadata", handler, false);
+		this.client.add(url, torrent => {
+			let file = torrent.files.find(file => file.name.endsWith('.mp4'));
+
+			this.playerElement.innerHTML = "";
+			this.playerElement.classList.remove("disconnected");
+			file.appendTo(this.playerElement, (err, videoElement) => {
+				console.error(err);
+
+				this.videoElement = <HTMLVideoElement>videoElement;
+				this.setupPlayer();
+			});
+		});
+		// if (!this.videoElement) {
+		// 	this.setupPlayer();
+		// }
+		// this.videoElement.src = url;
+		// let handler = () => {
+		// 	this.setMeta.emit(url, this.videoElement.duration);
+		// 	this.videoElement.removeEventListener("loadedmetadata", handler, false);
+		// };
+		// this.videoElement.addEventListener("loadedmetadata", handler, false);
 	}
 
 	private setupPlayer(): void {
-		this.videoElement = document.createElement("video");
-		this.playerElement.innerHTML = "";
-		this.playerElement.classList.remove("disconnected");
+		// this.videoElement = document.createElement("video");
+		// this.playerElement.innerHTML = "";
+		// this.playerElement.classList.remove("disconnected");
 		this.videoElement.addEventListener("timeupdate", () => {
 			this.setTime.emit(this.videoElement.currentTime);
 		}, false);
@@ -98,6 +110,6 @@ export default class WebTorrentPlayer implements Player {
 			this.initialPosition = 0;
 			this.justSeeked = true;
 		}
-		this.playerElement.appendChild(this.videoElement);
+		//this.playerElement.appendChild(this.videoElement);
 	}
 }
