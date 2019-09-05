@@ -1,4 +1,4 @@
-let id = document.getElementById.bind(document);
+let id: (elementId: string) => HTMLElement = document.getElementById.bind(document);
 
 if (!window.addEventListener) {
 	id("compat-errors").innerHTML =
@@ -23,14 +23,14 @@ id("connection-form").addEventListener(
 		e.preventDefault();
 		id("connection-errors").innerHTML = "";
 
-		let url = id("url-input").value;
+		let url = (<HTMLInputElement>id("url-input")).value;
 		if (url != null && url.length > 3 && url.split("://").length == 2) {
 			// TODO: error notification
-			let name = id("name-input").value;
-			let room = id("room-input").value;
+			let name = (<HTMLInputElement>id("name-input")).value;
+			let room = (<HTMLInputElement>id("room-input")).value;
 			if (name != null && name.length > 0) {
 				if (room != null && room.length > 0) {
-					syncWeb.connected.subscribe((motd, version, features) => {
+					syncWeb.socketConnected.subscribe(() => {
 						id("syncweb-connconfig").classList.add("hidden");
 						id("syncweb-player").innerText = "Connected to socket, loading...";
 					});
@@ -56,7 +56,7 @@ id("httpvideo-form").addEventListener(
 		e.preventDefault();
 		id("connection-errors").innerHTML = "";
 
-		let url = id("httpvideo-input").value;
+		let url = (<HTMLInputElement>id("httpvideo-input")).value;
 		currentPlayer.setURL(url);
 
 		return false;
@@ -64,7 +64,7 @@ id("httpvideo-form").addEventListener(
 	true
 );
 
-let appendChat = (message, name?) => {
+let appendChat = (message: string, name?: string) => {
 	let domMsg = document.createElement("div");
 	if (name) {
 		let domName = document.createElement("strong");
@@ -78,10 +78,10 @@ let appendChat = (message, name?) => {
 };
 
 // TODO make these detachable from protocol, for changeable protocols
-syncWeb.connected.subscribe(data => {
-	if (data) {
-		id("syncweb-player").innerText = data;
-		appendChat(data);
+syncWeb.connected.subscribe((motd, version, features) => {
+	if (motd != null) {
+		id("syncweb-player").innerText = motd;
+		appendChat(motd);
 	} else {
 		id("syncweb-player").innerText = "Connected";
 	}
