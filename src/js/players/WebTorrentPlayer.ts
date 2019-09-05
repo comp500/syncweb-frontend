@@ -1,12 +1,14 @@
 import Player from "./Player";
 import { EventTracker } from "syncweb-js/src/index";
+import * as WebTorrent from "webtorrent";
 
-export default class HTTPPlayer implements Player {
+export default class WebTorrentPlayer implements Player {
 	private videoElement: HTMLVideoElement = null;
 	private justSeeked = false;
 	private justPaused = false;
 	private justPlayed = false;
 	private initialPosition = 0;
+	private client: WebTorrent.Instance = null;
 
 	readonly setMeta = new EventTracker<(url: string, duration: number) => void>();
 	readonly setTime = new EventTracker<(time: number) => void>();
@@ -14,7 +16,9 @@ export default class HTTPPlayer implements Player {
 	readonly paused = new EventTracker<() => void>();
 	readonly seeked = new EventTracker<(time: number) => void>();
 
-	constructor(public readonly playerElement: HTMLElement) {}
+	constructor(public readonly playerElement: HTMLElement) {
+		this.client = new WebTorrent();
+	}
 
 	supports(url: string): boolean {
 		let split = url.split("://");

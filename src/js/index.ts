@@ -11,11 +11,12 @@ if (!WebSocket) {
 }
 
 import { SyncplayJSONClient } from "syncweb-js/src/index";
-import HTTPPlayer from "./players/HTTPPlayer";
+import Player from "./players/Player";
+
 const syncWeb = new SyncplayJSONClient();
 
 // TODO make this detachable from player, and not created on startup, for changeable protocols
-const currentPlayer = new HTTPPlayer(id("syncweb-player"));
+let currentPlayer: Player = null;
 
 id("connection-form").addEventListener(
 	"submit",
@@ -57,8 +58,21 @@ id("httpvideo-form").addEventListener(
 		id("connection-errors").innerHTML = "";
 
 		let url = (<HTMLInputElement>id("httpvideo-input")).value;
-		currentPlayer.setURL(url);
-
+		if (currentPlayer == null || !currentPlayer.supports(url)) {
+			if (url.split("://")[0] == "http" || url.split("://")[0] == "https") {
+				import("./players/HTTPPlayer").then((HTTPPlayer) => {
+					currentPlayer = new HTTPPlayer.default(id("syncweb-player"));
+					setupPlayer();
+					currentPlayer.setURL(url);
+				});
+			} else {
+				import("./players/WebTorrentPlayer").then((WebTorrentPlayer) => {
+					currentPlayer = new WebTorrentPlayer.default(id("syncweb-player"));
+					setupPlayer();
+					currentPlayer.setURL(url);
+				});
+			}
+		}
 		return false;
 	},
 	true
@@ -124,37 +138,39 @@ syncWeb.unpause.subscribe(user => {
 	currentPlayer.play();
 });
 
-currentPlayer.setTime.subscribe(position => {
-	syncWeb.setTime(position);
-});
+function setupPlayer() {
+	currentPlayer.setTime.subscribe(position => {
+		syncWeb.setTime(position);
+	});
 
-currentPlayer.seeked.subscribe(position => {
-	if (syncWeb.getUsername()) {
-		appendChat(`${syncWeb.getUsername()} seeked to ${position}`);
-	} else {
-		appendChat(`Seeked to ${position}`);
-	}
-	syncWeb.seekTo(position);
-});
+	currentPlayer.seeked.subscribe(position => {
+		if (syncWeb.getUsername()) {
+			appendChat(`${syncWeb.getUsername()} seeked to ${position}`);
+		} else {
+			appendChat(`Seeked to ${position}`);
+		}
+		syncWeb.seekTo(position);
+	});
 
-currentPlayer.unpaused.subscribe(() => {
-	if (syncWeb.getUsername()) {
-		appendChat(`${syncWeb.getUsername()} unpaused`);
-	} else {
-		appendChat(`Unpaused`);
-	}
-	syncWeb.setPause(false);
-});
+	currentPlayer.unpaused.subscribe(() => {
+		if (syncWeb.getUsername()) {
+			appendChat(`${syncWeb.getUsername()} unpaused`);
+		} else {
+			appendChat(`Unpaused`);
+		}
+		syncWeb.setPause(false);
+	});
 
-currentPlayer.paused.subscribe(() => {
-	if (syncWeb.getUsername()) {
-		appendChat(`${syncWeb.getUsername()} paused`);
-	} else {
-		appendChat(`Paused`);
-	}
-	syncWeb.setPause(true);
-});
+	currentPlayer.paused.subscribe(() => {
+		if (syncWeb.getUsername()) {
+			appendChat(`${syncWeb.getUsername()} paused`);
+		} else {
+			appendChat(`Paused`);
+		}
+		syncWeb.setPause(true);
+	});
 
-currentPlayer.setMeta.subscribe((name, duration) => {
-	syncWeb.sendFile(name, duration);
-});
+	currentPlayer.setMeta.subscribe((name, duration) => {
+		syncWeb.sendFile(name, duration);
+	});
+}
