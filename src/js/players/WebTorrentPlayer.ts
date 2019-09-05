@@ -1,6 +1,6 @@
 import Player from "./Player";
 import { EventTracker } from "syncweb-js/src/index";
-import * as WebTorrent from "webtorrent";
+import WebTorrent from "webtorrent";
 
 export default class WebTorrentPlayer implements Player {
 	private videoElement: HTMLVideoElement = null;
@@ -18,6 +18,7 @@ export default class WebTorrentPlayer implements Player {
 
 	constructor(public readonly playerElement: HTMLElement) {
 		this.client = new WebTorrent();
+		// TODO: test WebRTC support, show error if not available
 	}
 
 	supports(url: string): boolean {

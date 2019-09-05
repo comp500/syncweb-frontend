@@ -15,7 +15,6 @@ import Player from "./players/Player";
 
 const syncWeb = new SyncplayJSONClient();
 
-// TODO make this detachable from player, and not created on startup, for changeable protocols
 let currentPlayer: Player = null;
 
 id("connection-form").addEventListener(
