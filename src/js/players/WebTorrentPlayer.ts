@@ -55,12 +55,17 @@ export default class WebTorrentPlayer implements Player {
 		console.log("Setting " + url);
 		this.client.add(url, torrent => {
 			console.log("Got " + torrent);
-			// TODO: better selection system
-			let file = torrent.files.find(file => file.name.endsWith(".mp4"));
+			// TODO: don't select the wrong file
+			let file = torrent.files[0];
 
 			this.playerElement.innerHTML = "";
 			this.playerElement.classList.remove("disconnected");
-			file.appendTo(this.playerElement, (err, videoElement) => {
+			file.appendTo(this.playerElement, {
+				maxBlobLength: 2 * 1000 * 1000 * 1000 // 2 GB
+			}, (err, videoElement) => {
+				if (err != null) {
+					console.error(err);
+				}
 				this.videoElement = <HTMLVideoElement>videoElement;
 				this.setupPlayer();
 			});
