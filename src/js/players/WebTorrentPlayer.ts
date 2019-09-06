@@ -1,6 +1,8 @@
 import Player from "./Player";
 import { EventTracker } from "syncweb-js/src/index";
-import WebTorrent from "webtorrent";
+//import WebTorrent from "webtorrent";
+
+declare const WebTorrent: any;
 
 export default class WebTorrentPlayer implements Player {
 	private videoElement: HTMLVideoElement = null;
@@ -8,7 +10,7 @@ export default class WebTorrentPlayer implements Player {
 	private justPaused = false;
 	private justPlayed = false;
 	private initialPosition = 0;
-	private client: WebTorrent.Instance = null;
+	private client: any = null;
 
 	readonly setMeta = new EventTracker<(url: string, duration: number) => void>();
 	readonly setTime = new EventTracker<(time: number) => void>();
@@ -53,13 +55,12 @@ export default class WebTorrentPlayer implements Player {
 		console.log("Setting " + url);
 		this.client.add(url, torrent => {
 			console.log("Got " + torrent);
+			// TODO: better selection system
 			let file = torrent.files.find(file => file.name.endsWith(".mp4"));
 
 			this.playerElement.innerHTML = "";
 			this.playerElement.classList.remove("disconnected");
 			file.appendTo(this.playerElement, (err, videoElement) => {
-				console.error(err);
-
 				this.videoElement = <HTMLVideoElement>videoElement;
 				this.setupPlayer();
 			});
