@@ -50,8 +50,10 @@ export default class WebTorrentPlayer implements Player {
 	}
 
 	setURL(url: string): void {
+		console.log("Setting " + url);
 		this.client.add(url, torrent => {
-			let file = torrent.files.find(file => file.name.endsWith('.mp4'));
+			console.log("Got " + torrent);
+			let file = torrent.files.find(file => file.name.endsWith(".mp4"));
 
 			this.playerElement.innerHTML = "";
 			this.playerElement.classList.remove("disconnected");
@@ -77,31 +79,47 @@ export default class WebTorrentPlayer implements Player {
 		// this.videoElement = document.createElement("video");
 		// this.playerElement.innerHTML = "";
 		// this.playerElement.classList.remove("disconnected");
-		this.videoElement.addEventListener("timeupdate", () => {
-			this.setTime.emit(this.videoElement.currentTime);
-		}, false);
-		this.videoElement.addEventListener("play", () => {
-			if (this.justPlayed) {
-				this.justPlayed = false;
-			} else {
-				this.unpaused.emit();
-			}
-		}, false);
-		this.videoElement.addEventListener("pause", () => {
-			if (this.justPaused) {
-				this.justPaused = false;
-			} else {
-				this.paused.emit();
-			}
-		}, false);
-		this.videoElement.addEventListener("seeked", () => {
-			if (this.justSeeked) {
-				// ignore first seek
-				this.justSeeked = false;
-			} else {
-				this.seeked.emit(this.videoElement.currentTime);
-			}
-		}, false);
+		this.videoElement.addEventListener(
+			"timeupdate",
+			() => {
+				this.setTime.emit(this.videoElement.currentTime);
+			},
+			false
+		);
+		this.videoElement.addEventListener(
+			"play",
+			() => {
+				if (this.justPlayed) {
+					this.justPlayed = false;
+				} else {
+					this.unpaused.emit();
+				}
+			},
+			false
+		);
+		this.videoElement.addEventListener(
+			"pause",
+			() => {
+				if (this.justPaused) {
+					this.justPaused = false;
+				} else {
+					this.paused.emit();
+				}
+			},
+			false
+		);
+		this.videoElement.addEventListener(
+			"seeked",
+			() => {
+				if (this.justSeeked) {
+					// ignore first seek
+					this.justSeeked = false;
+				} else {
+					this.seeked.emit(this.videoElement.currentTime);
+				}
+			},
+			false
+		);
 		this.videoElement.controls = true;
 		this.videoElement.loop = false;
 		if (this.initialPosition > 0) {
