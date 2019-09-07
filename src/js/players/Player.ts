@@ -11,5 +11,5 @@ export default interface Player {
 	pause(): void;
 	play(): void;
 	setURL(url: string): void;
-	// TODO discard(): void
+	destroy(): void
 }

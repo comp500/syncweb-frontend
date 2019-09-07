@@ -128,4 +128,8 @@ export default class WebTorrentPlayer implements Player {
 			this.justSeeked = true;
 		}
 	}
+
+	destroy(): void {
+		this.client.destroy();
+	}
 }

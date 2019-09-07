@@ -103,6 +103,9 @@ id("httpvideo-form").addEventListener(
 			// TODO: revert if there are errors?
 			currentPlayerFactoryIndex = newPlayerFactoryIndex;
 			newPlayerFactory().then(player => {
+				if (currentPlayer != null) {
+					currentPlayer.destroy();
+				}
 				currentPlayer = player;
 				setupPlayer();
 				currentPlayer.setURL(url);

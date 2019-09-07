@@ -111,4 +111,9 @@ export default class YoutubePlayer implements Player {
 			}
 		});
 	}
+
+	destroy(): void {
+		this.player.destroy();
+		this.fileLoaded = false;
+	}
 }

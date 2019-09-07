@@ -77,4 +77,8 @@ export default class HTTPPlayer implements Player {
 		};
 		this.videoElement.addEventListener("loadedmetadata", handler, false);
 	}
+
+	destroy() {
+		this.videoElement.parentNode.removeChild(this.videoElement);
+	}
 }

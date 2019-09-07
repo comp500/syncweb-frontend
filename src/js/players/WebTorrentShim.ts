@@ -6,6 +6,10 @@ declare global {
 
 export default function(): Promise<typeof import("webtorrent")> {
 	return new Promise<typeof import("webtorrent")>((resolve, reject) => {
+		if (window.WebTorrent != null) {
+			resolve(window.WebTorrent);
+			return;
+		}
 		let script = document.createElement("script");
 		script.onload = () => {
 			resolve(window.WebTorrent);
