@@ -12,6 +12,7 @@ if (!WebSocket) {
 
 import { SyncplayJSONClient } from "syncweb-js/src/index";
 import Player from "./players/Player";
+import WebTorrentShim from "./players/WebTorrentShim";
 
 const syncWeb = new SyncplayJSONClient();
 
@@ -65,8 +66,8 @@ id("httpvideo-form").addEventListener(
 					currentPlayer.setURL(url);
 				});
 			} else {
-				import("./players/WebTorrentPlayer").then((WebTorrentPlayer) => {
-					currentPlayer = new WebTorrentPlayer.default(id("syncweb-player"));
+				Promise.all([WebTorrentShim(), import("./players/WebTorrentPlayer")]).then(([WebTorrent, WebTorrentPlayer]) => {
+					currentPlayer = new WebTorrentPlayer.default(id("syncweb-player"), WebTorrent);
 					setupPlayer();
 					currentPlayer.setURL(url);
 				});

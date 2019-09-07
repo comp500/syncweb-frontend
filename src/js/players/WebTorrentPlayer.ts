@@ -1,8 +1,5 @@
 import Player from "./Player";
 import { EventTracker } from "syncweb-js/src/index";
-//import WebTorrent from "webtorrent";
-
-declare const WebTorrent: any;
 
 export default class WebTorrentPlayer implements Player {
 	private videoElement: HTMLVideoElement = null;
@@ -10,7 +7,7 @@ export default class WebTorrentPlayer implements Player {
 	private justPaused = false;
 	private justPlayed = false;
 	private initialPosition = 0;
-	private client: any = null;
+	private client: import("webtorrent").Instance = null;
 
 	readonly setMeta = new EventTracker<(url: string, duration: number) => void>();
 	readonly setTime = new EventTracker<(time: number) => void>();
@@ -18,7 +15,7 @@ export default class WebTorrentPlayer implements Player {
 	readonly paused = new EventTracker<() => void>();
 	readonly seeked = new EventTracker<(time: number) => void>();
 
-	constructor(public readonly playerElement: HTMLElement) {
+	constructor(public readonly playerElement: HTMLElement, WebTorrent: typeof import("webtorrent")) {
 		this.client = new WebTorrent();
 		// TODO: test WebRTC support, show error if not available
 	}
@@ -61,7 +58,8 @@ export default class WebTorrentPlayer implements Player {
 			this.playerElement.innerHTML = "";
 			this.playerElement.classList.remove("disconnected");
 			file.appendTo(this.playerElement, {
-				maxBlobLength: 2 * 1000 * 1000 * 1000 // 2 GB
+				// TODO: show progress bar if using BlobURL loading (needs to load the whole file)
+				//maxBlobLength: 2 * 1000 * 1000 * 1000 // 2 GB
 			}, (err, videoElement) => {
 				if (err != null) {
 					console.error(err);
@@ -134,6 +132,5 @@ export default class WebTorrentPlayer implements Player {
 			this.initialPosition = 0;
 			this.justSeeked = true;
 		}
-		//this.playerElement.appendChild(this.videoElement);
 	}
 }
