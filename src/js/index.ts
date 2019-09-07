@@ -18,6 +18,27 @@ const syncWeb = new SyncplayJSONClient();
 
 let currentPlayer: Player = null;
 
+// This is very funky, probably should have implemented it differently but it looks nice
+const playerFactories: ((url: string) => (() => Promise<Player>) | false)[] = [
+	(url: string) => {
+		if (url.split(":")[0] == "magnet") {
+			return () =>
+				Promise.all([WebTorrentShim(), import("./players/WebTorrentPlayer")]).then(
+					([WebTorrent, WebTorrentPlayer]) => new WebTorrentPlayer.default(id("syncweb-player"), WebTorrent)
+				);
+		}
+		return false;
+	},
+	(url: string) => {
+		if (url.split("://")[0] == "http" || url.split("://")[0] == "https") {
+			return () =>
+				import("./players/HTTPPlayer").then(HTTPPlayer => new HTTPPlayer.default(id("syncweb-player")));
+		}
+		return false;
+	}
+];
+let currentPlayerFactoryIndex: number = -1;
+
 id("connection-form").addEventListener(
 	"submit",
 	e => {
@@ -58,20 +79,27 @@ id("httpvideo-form").addEventListener(
 		id("connection-errors").innerHTML = "";
 
 		let url = (<HTMLInputElement>id("httpvideo-input")).value;
-		if (currentPlayer == null || !currentPlayer.supports(url)) {
-			if (url.split("://")[0] == "http" || url.split("://")[0] == "https") {
-				import("./players/HTTPPlayer").then((HTTPPlayer) => {
-					currentPlayer = new HTTPPlayer.default(id("syncweb-player"));
-					setupPlayer();
-					currentPlayer.setURL(url);
-				});
-			} else {
-				Promise.all([WebTorrentShim(), import("./players/WebTorrentPlayer")]).then(([WebTorrent, WebTorrentPlayer]) => {
-					currentPlayer = new WebTorrentPlayer.default(id("syncweb-player"), WebTorrent);
-					setupPlayer();
-					currentPlayer.setURL(url);
-				});
-			}
+		
+		// TODO: handle errors
+		let newPlayerFactory: (() => Promise<Player>) | false;
+		let newPlayerFactoryIndex = playerFactories.findIndex(factory => {
+			return (newPlayerFactory = factory(url)) !== false;
+		});
+		if (newPlayerFactoryIndex == -1 || newPlayerFactory == false) {
+			// TODO: handle no supported players
+			return false;
+		}
+
+		if (newPlayerFactoryIndex != currentPlayerFactoryIndex) {
+			// TODO: revert if there are errors?
+			currentPlayerFactoryIndex = newPlayerFactoryIndex;
+			newPlayerFactory().then(player => {
+				currentPlayer = player;
+				setupPlayer();
+				currentPlayer.setURL(url);
+			});
+		} else {
+			currentPlayer.setURL(url);
 		}
 		return false;
 	},
