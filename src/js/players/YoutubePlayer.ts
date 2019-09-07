@@ -2,7 +2,7 @@ import Player from "./Player";
 import { EventTracker } from "syncweb-js/src/index";
 import YTPlayer from "yt-player";
 
-const seekWindow = 0.5;
+const seekWindow = 1.5;
 
 export default class YoutubePlayer implements Player {
 	private fileLoaded = false;
@@ -26,7 +26,9 @@ export default class YoutubePlayer implements Player {
 		playerElement.innerHTML = "";
 		playerElement.classList.remove("disconnected");
 
-		this.player = new YTPlayer(playerElement);
+		this.player = new YTPlayer(playerElement, {
+			timeupdateFrequency: 300
+		});
 
 		this.player.on("timeupdate", time => {
 			this.setTime.emit(time);
@@ -34,7 +36,7 @@ export default class YoutubePlayer implements Player {
 			// No "seeked" event exists, so we must emulate it with some tricks
 			let predictedSeekTime = this.prevSeekTime;
 			if (this.predictedPlaying) {
-				predictedSeekTime += new Date().getTime() - this.prevClockTime;
+				predictedSeekTime += (new Date().getTime() / 1000) - this.prevClockTime;
 			}
 
 			if (Math.abs(predictedSeekTime - time) > seekWindow) {
@@ -46,7 +48,7 @@ export default class YoutubePlayer implements Player {
 				}
 			}
 
-			this.prevClockTime = new Date().getTime();
+			this.prevClockTime = (new Date().getTime() / 1000);
 			this.prevSeekTime = time;
 		});
 		this.player.on("playing", () => {
@@ -104,6 +106,7 @@ export default class YoutubePlayer implements Player {
 		this.player.on("unstarted", () => {
 			if (once) {
 				once = false;
+				this.fileLoaded = true;
 				this.setMeta.emit(url, this.player.getDuration());
 			}
 		});
