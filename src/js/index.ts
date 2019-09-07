@@ -63,7 +63,7 @@ id("connection-form").addEventListener(
 				if (room != null && room.length > 0) {
 					syncWeb.socketConnected.subscribe(() => {
 						id("syncweb-connconfig").classList.add("hidden");
-						id("syncweb-player").innerText = "Connected to socket, loading...";
+						//id("syncweb-player").innerText = "Connected to socket, loading...";
 					});
 					syncWeb.connect(name, room, url);
 				} else {
@@ -134,10 +134,10 @@ let appendChat = (message: string, name?: string) => {
 // TODO make these detachable from protocol, for changeable protocols
 syncWeb.connected.subscribe((motd, version, features) => {
 	if (motd != null) {
-		id("syncweb-player").innerText = motd;
+		//id("syncweb-player").innerText = motd;
 		appendChat(motd);
 	} else {
-		id("syncweb-player").innerText = "Connected";
+		//id("syncweb-player").innerText = "Connected";
 	}
 });
 
