@@ -15,14 +15,9 @@ export default class WebTorrentPlayer implements Player {
 	readonly paused = new EventTracker<() => void>();
 	readonly seeked = new EventTracker<(time: number) => void>();
 
-	constructor(public readonly playerElement: HTMLElement, WebTorrent: typeof import("webtorrent")) {
+	constructor(private readonly playerElement: HTMLElement, WebTorrent: typeof import("webtorrent")) {
 		this.client = new WebTorrent();
 		// TODO: test WebRTC support, show error if not available
-	}
-
-	supports(url: string): boolean {
-		let split = url.split("://");
-		return split[0] == "http" || split[0] == "https";
 	}
 
 	seekTo(position: number): void {

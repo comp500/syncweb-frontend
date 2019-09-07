@@ -30,6 +30,15 @@ const playerFactories: ((url: string) => (() => Promise<Player>) | false)[] = [
 		return false;
 	},
 	(url: string) => {
+		if (/^https?:\/\/(?:www\.)?youtu\.?be(?:\.com)?\/(?:watch\?v=)?([A-Za-z0-9_-]{11})/.test(url)) {
+			return () =>
+				import("./players/YoutubePlayer").then(
+					YoutubePlayer => new YoutubePlayer.default(id("syncweb-player"))
+				);
+		}
+		return false;
+	},
+	(url: string) => {
 		if (url.split("://")[0] == "http" || url.split("://")[0] == "https") {
 			return () =>
 				import("./players/HTTPPlayer").then(HTTPPlayer => new HTTPPlayer.default(id("syncweb-player")));
@@ -79,7 +88,7 @@ id("httpvideo-form").addEventListener(
 		id("connection-errors").innerHTML = "";
 
 		let url = (<HTMLInputElement>id("httpvideo-input")).value;
-		
+
 		// TODO: handle errors
 		let newPlayerFactory: (() => Promise<Player>) | false;
 		let newPlayerFactoryIndex = playerFactories.findIndex(factory => {

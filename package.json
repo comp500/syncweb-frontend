@@ -20,12 +20,13 @@
   "homepage": "https://github.com/comp500/syncweb-frontend#readme",
   "devDependencies": {
     "@types/webtorrent": "^0.107.0",
+    "@types/yt-player": "^3.4.0",
     "parcel-bundler": "^1.12.3",
     "sass": "^1.22.7",
     "typescript": "^3.5.3"
   },
   "dependencies": {
     "syncweb-js": "^1.0.1",
-    "webtorrent": "^0.107.6"
+    "yt-player": "^3.4.0"
   }
 }

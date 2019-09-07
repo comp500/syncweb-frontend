@@ -7,11 +7,9 @@ export default interface Player {
 	readonly paused: EventTracker<() => void>;
 	readonly seeked: EventTracker<(time: number) => void>;
 
-	readonly playerElement: HTMLElement;
-
-	supports(url: string): boolean;
 	seekTo(position: number): void;
 	pause(): void;
 	play(): void;
 	setURL(url: string): void;
+	// TODO discard(): void
 }

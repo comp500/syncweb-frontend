@@ -14,52 +14,10 @@ export default class HTTPPlayer implements Player {
 	readonly paused = new EventTracker<() => void>();
 	readonly seeked = new EventTracker<(time: number) => void>();
 
-	constructor(public readonly playerElement: HTMLElement) {}
-
-	supports(url: string): boolean {
-		let split = url.split("://");
-		return split[0] == "http" || split[0] == "https";
-	}
-
-	seekTo(position: number): void {
-		if (this.videoElement != null) {
-			this.justSeeked = true;
-			this.videoElement.currentTime = position;
-		} else {
-			this.initialPosition = position;
-		}
-	}
-
-	pause(): void {
-		if (this.videoElement) {
-			this.justPaused = true;
-			this.videoElement.pause();
-		}
-	}
-
-	play(): void {
-		if (this.videoElement) {
-			this.justPlayed = true;
-			this.videoElement.play();
-		}
-	}
-
-	setURL(url: string): void {
-		if (!this.videoElement) {
-			this.setupPlayer();
-		}
-		this.videoElement.src = url;
-		let handler = () => {
-			this.setMeta.emit(url, this.videoElement.duration);
-			this.videoElement.removeEventListener("loadedmetadata", handler, false);
-		};
-		this.videoElement.addEventListener("loadedmetadata", handler, false);
-	}
-
-	private setupPlayer(): void {
+	constructor(playerElement: HTMLElement) {
 		this.videoElement = document.createElement("video");
-		this.playerElement.innerHTML = "";
-		this.playerElement.classList.remove("disconnected");
+		playerElement.innerHTML = "";
+		playerElement.classList.remove("disconnected");
 		this.videoElement.addEventListener("timeupdate", () => {
 			this.setTime.emit(this.videoElement.currentTime);
 		}, false);
@@ -93,6 +51,30 @@ export default class HTTPPlayer implements Player {
 			this.initialPosition = 0;
 			this.justSeeked = true;
 		}
-		this.playerElement.appendChild(this.videoElement);
+		playerElement.appendChild(this.videoElement);
+	}
+
+	seekTo(position: number): void {
+		this.justSeeked = true;
+		this.videoElement.currentTime = position;
+	}
+
+	pause(): void {
+		this.justPaused = true;
+		this.videoElement.pause();
+	}
+
+	play(): void {
+		this.justPlayed = true;
+		this.videoElement.play();
+	}
+
+	setURL(url: string): void {
+		this.videoElement.src = url;
+		let handler = () => {
+			this.setMeta.emit(url, this.videoElement.duration);
+			this.videoElement.removeEventListener("loadedmetadata", handler, false);
+		};
+		this.videoElement.addEventListener("loadedmetadata", handler, false);
 	}
 }
